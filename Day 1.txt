@@ -1,0 +1,105 @@
+OCA (Oracle Database Administrator Certified Associate) -> 2 Exam
+                  ||
+OCP (Oracle Database Administrator Certified Professional) -> 1 Exam
+              -> Training Resmi
+                  ||
+OCM (Oracle Database Administrator Certified Master)
+
+========================================================
+
+Oracle Database Version:
+
+	19c
+	18c
+	12c  ==> Training dan Exam 
+	11g
+	10g
+	9i
+	8i
+	7.3
+	x
+	x
+
+========================================================
+
+Shared Pool:
+   User 1 : select * from employees;
+            insert ...
+            update ...
+            delete ...
+   User 2 : select * from employees;
+            select * from departments;
+
+Database Buffer Cache
+   10   Tina   1200
+   20   Dodi   1500
+
+Redo Log Buffer
+   DML : insert, update, delete
+   DDL : create, alter, drop
+   DCL : grant, revoke
+
+=====================================
+
+Install Oracle Database 12c Software
+- Install database software only
+- Single instance database installation
+- Enterprise Edition
+- Use Virtual Account
+- Oracle Base : c:\u01
+  Software Location : C:\u01\product\12.2.0\dbhome_1
+
+
+Oracle Database Edition
+- Oracle DB XE (Free)
+- Oracle SE 1
+- Oracle SE : SE 1 + Free RAC
+- Oracle EE 
+    Options :
+      - Data Guard 
+      - Spatial
+      - Data Mining
+      - Partitioning
+      - Advanced Security
+      - RAC
+      - ..
+      - ..
+
+==================================
+
+Create Database Using DBCA
+- open DBCA
+- Create a Database
+- Advanced Configuration
+- Template Database :  General Purpose (OLTP)
+- Global Database Name : prod
+  SID : prod
+
+  Disable Create as container database
+- Use Template file for database attributes
+- Create a new listener
+   Listener Name : LISTENER
+   Port          : 1521
+- Memory => ASMM
+    SGA Size : 800
+    PGA Size : 200
+  Process :  150
+  Character Set : Unicode
+  Sample Schema : Check Add sample schemas 
+  EM DB Express : 5500
+- Password user SYS + System : Welcome1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
