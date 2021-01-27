@@ -1,0 +1,328 @@
+github.com/training1357
+
+Paradigma Database
+- Network
+- Hierarchical
+- Object Oriented
+- Relational -> OLTP / Datawarehouse
+  RDBMS : Relational Database Management System
+	Contoh:
+    - Oracle Database
+	- MySQL
+	- IBM DB2
+	- Microsoft SQL Server
+	- PostgreSQL
+	- etc...
+- No SQL -> Big Data
+	Contoh:
+	- Oracle No SQL
+	- Apache HBase
+	- MongoDB
+	- Cassandra
+	- Neo4j
+	- etc...
+
+==========================================
+
+=== SQL Plus ===
+
+sqlplus sys/Welcome1 as sysdba
+sqlplus sys as sysdba
+
+SQL> desc all_users;
+SQL> select username from all_users;
+SQL> select * from hr.countries;
+SQL> exit;
+
+sqlplus hr
+SQL> show user;
+SQL> connect sys/Welcome1 as sysdba
+SQL> show user;
+SQL> connect hr/Welcome1
+SQL> host cls
+SQL> desc tab;
+SQL> select tname from tab;
+SQL> desc employees;
+SQL> select * from employees;
+SQL> select FIRST_NAME, SALARY from employees;
+
+=== SQL Developer ===
+
+01. Buat koneksi sebagai user HR
+02. Buat koneksi sebagai user SYS
+
+=== EM DB Express ===
+
+sqlplus / as sysdba
+SQL> show user
+SQL> select DBMS_XDB.getHTTPPort() from dual;
+SQL> select DBMS_XDB_CONFIG.gethttpsport() from dual;
+
+url: https://192.11.12.20:5500/em
+     https://server:5500/em
+	 https://localhost:5500/em
+	 
+Jangan lupa install Adobe Flash Player agar bisa mengakses EM Express
+
+
+==== SELECT Statement =====
+
+select last_name, salary, salary + 100
+from employees;
+
+select last_name, salary, 12*salary + 100
+from employees;
+
+LAST_NAME                     SALARY 12*SALARY+100
+------------------------- ---------- -------------
+King                           24000        288100
+
+select last_name, salary, 12*(salary + 100)
+from employees;
+
+LAST_NAME                     SALARY 12*(SALARY+100)
+------------------------- ---------- ---------------
+King                           24000          289200
+
+SELECT 100+200
+FROM employees;
+
+SELECT 100+200, 2*3, 500-10
+FROM dual;
+
+=== Null Values ====
+
+select last_name, salary, commission_pct
+from employees;
+
+select last_name, salary, 12*salary + commission_pct*salary*12
+from employees;
+
+select last_name AS name, salary gaji, 
+       12*salary + commission_pct*salary*12 "Annual Salary"
+from employees;
+
+=== Concatenate Operator ====
+
+select last_name || job_id
+from employees;
+
+select last_name || ' is a '|| job_id
+from employees;
+
+select last_name || ' is a '|| job_id AS "Employee Jobs"
+from employees;
+
+== DISTINCT Keyword ==
+
+select department_id
+from employees;
+
+select distinct department_id
+from employees;
+
+select distinct department_id, salary
+from employees;
+
+=== WHERE Clause ===
+
+SELECT first_name, salary, department_id
+FROM employees
+WHERE department_id = 90;
+
+SELECT first_name, salary, department_id, hire_date
+FROM employees
+WHERE first_name = 'Steven';
+
+SELECT first_name, salary, department_id, hire_date
+FROM employees
+WHERE hire_date = '17-JUN-03';
+
+SELECT first_name, salary, department_id
+FROM employees
+WHERE salary <= 2500;
+
+SELECT first_name, salary
+FROM employees
+WHERE salary BETWEEN 2500 AND 3500;
+
+SELECT first_name, salary
+FROM employees
+WHERE salary >= 2500 AND salary <= 3500;
+
+SELECT first_name, salary, manager_id
+FROM employees
+WHERE manager_id in (100, 101, 201);
+
+SELECT first_name, salary, manager_id
+FROM employees
+WHERE manager_id = 100 OR manager_id = 101 OR manager_id =  201;
+
+SELECT first_name
+FROM employees
+WHERE first_name LIKE 'S%';
+
+SELECT first_name
+FROM employees
+WHERE first_name LIKE 'S%a';
+
+SELECT first_name
+FROM employees
+WHERE first_name LIKE 'S_a%a';
+
+SELECT last_name
+FROM employees
+WHERE last_name LIKE '_o%';
+
+SELECT first_name
+FROM employees
+WHERE first_name LIKE '__a%a';
+
+SELECT last_name, manager_id
+FROM employees
+WHERE manager_id IS NULL;
+
+SELECT last_name, manager_id
+FROM employees
+WHERE manager_id = NULL;
+
+SELECT last_name, commission_pct
+FROM employees
+WHERE commission_pct is null;
+
+SELECT last_name, job_id, salary
+FROM employees
+WHERE salary >= 10000
+      AND
+	  job_id LIKE '%MAN%';
+
+SELECT last_name, job_id, salary
+FROM employees
+WHERE salary >= 10000
+      OR
+	  job_id LIKE '%MAN%';
+
+SELECT last_name, job_id
+FROM employees
+WHERE job_id IN ('IT_PROG', 'ST_CLERK', 'SA_REP');
+
+SELECT last_name, job_id
+FROM employees
+WHERE job_id NOT IN ('IT_PROG', 'ST_CLERK', 'SA_REP');
+
+== Rules of Precedence ===
+
+SELECT last_name, department_id, salary
+FROM employees
+WHERE department_id = 60
+      OR
+	  department_id = 80
+	  AND
+	  salary > 10000;
+	  
+SELECT last_name, department_id, salary
+FROM employees
+WHERE (department_id = 60
+      OR
+	  department_id = 80)
+	  AND
+	  salary > 10000;	  
+
+SELECT last_name, department_id, hire_date
+FROM employees
+ORDER BY hire_date;
+
+SELECT last_name, department_id, hire_date
+FROM employees
+ORDER BY hire_date DESC;
+
+SELECT last_name, department_id, hire_date
+FROM employees
+ORDER BY last_name;
+
+SELECT last_name, department_id, hire_date, salary gaji
+FROM employees
+ORDER BY gaji;
+
+SELECT last_name, department_id, hire_date
+FROM employees
+ORDER BY 2;
+
+SELECT last_name, department_id, salary
+FROM employees
+ORDER BY department_id, salary DESC;
+
+SELECT last_name, department_id, salary
+FROM employees
+ORDER BY salary ASC, department_id DESC;
+
+SELECT last_name, department_id, salary
+FROM employees
+ORDER BY salary DESC;
+
+SELECT last_name, department_id, salary
+FROM employees
+ORDER BY salary DESC
+FETCH FIRST 5 ROWS ONLY;
+
+SELECT last_name, department_id, salary
+FROM employees
+ORDER BY salary ASC
+FETCH FIRST 3 ROWS ONLY;
+
+SELECT last_name, department_id, salary
+FROM employees
+WHERE salary >= &emp_sal;
+
+SELECT last_name, department_id, job_id, salary
+FROM employees
+WHERE job_id = '&job_title';
+
+SELECT last_name, department_id, job_id, &column_name
+FROM employees
+WHERE &condition
+ORDER BY &order_column;
+
+SELECT last_name, department_id, job_id, &&column_name
+FROM employees
+ORDER BY &column_name;
+
+SELECT lower('SQL Course'), upper('SQL Course'), initcap('SQL Course')
+FROM dual;
+
+SELECT employee_id, last_name, department_id
+FROM employees
+WHERE last_name = 'higgins';
+
+SELECT employee_id, last_name, department_id
+FROM employees
+WHERE lower(last_name) = 'higgins';
+
+SELECT employee_id, last_name, department_id
+FROM employees
+WHERE upper(last_name) = 'HIGGINS';
+
+SELECT last_name,
+       UPPER(CONCAT(SUBSTR(last_name, 1, 8),'_US'))
+FROM employees
+WHERE department_id = 60;
+
+SELECT sysdate FROM dual;
+
+SELECT last_name, (sysdate-hire_date) as days
+FROM employees
+WHERE department_id = 90;
+
+SELECT last_name, (sysdate-hire_date)/7 as weeks
+FROM employees
+WHERE department_id = 90;
+
+SELECT next_day('02-SEP-05','FRIDAY') FROM dual;
+
+SELECT round(sysdate, 'MONTH') FROM dual;
+
+SELECT round(sysdate, 'YEAR') FROM dual;
+
+SELECT trunc(sysdate, 'MONTH') FROM dual;
+
+SELECT trunc(sysdate, 'YEAR') FROM dual;	
