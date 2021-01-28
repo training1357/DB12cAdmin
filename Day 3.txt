@@ -1,0 +1,383 @@
+4 kali exam
+  - 2 kali exam OCA 12c
+  - 2 kali exam OCP 2019
+  
+Oracle Database 12c, jika kita ingin OCP
+  - Harus OCA : 2 kali exam
+  - Ambil training resmi
+  - Exam 1 kali
+  
+OCP 2019
+  - 2 kali exam
+  - Training
+  
+OCP 8i Database  : 5 kali exam
+    9i
+	10g
+	11g
+	12c 
+OCP 6i Developer : 4 kali exam
+
+==========================================
+
+== to_char function with date
+
+SELECT last_name, hire_date
+FROM employees
+WHERE department_id = 90;
+
+SELECT last_name, to_char(hire_date, 'fmDD Month, YYYY')
+FROM employees
+WHERE department_id = 90;
+
+SELECT last_name, to_char(hire_date, 'fmDD Day MONTH, YYYY')
+FROM employees
+WHERE department_id = 90;
+
+SELECT last_name, salary
+FROM employees
+WHERE department_id = 90;
+
+SELECT last_name, to_char(salary, '$99,999.00') Salary
+FROM employees
+WHERE department_id = 90;
+
+SELECT last_name, salary
+FROM employees
+WHERE hire_date = '17-JUN-03';
+
+SELECT last_name, salary
+FROM employees
+WHERE hire_date = 'JUNE 17, 2003';
+
+SELECT last_name, salary
+FROM employees
+WHERE hire_date = to_date('JUNE 17, 2003','fmMONTH DD, YYYY'); 
+
+SELECT last_name, salary
+FROM employees
+WHERE hire_date = to_date('JUNE 17, 2003','fmMon DD, YYYY');
+
+SELECT last_name, 
+       salary, 
+	   nvl(commission_pct,0),
+	   (salary*12) + (salary*12*commission_pct) ann_sal
+FROM employees
+WHERE job_id in ('IT_PROG','SA_REP');
+
+SELECT last_name, 
+       salary, 
+	   nvl(commission_pct,0),
+	   (salary*12) + (salary*12*nvl(commission_pct,0)) ann_sal
+FROM employees
+WHERE job_id in ('IT_PROG','SA_REP');
+
+select last_name, salary, manager_id
+from employees
+where manager_id is null;
+
+select last_name, salary, nvl(manager_id, 9999)
+from employees
+where department_id = 90;
+
+select last_name, salary, commission_pct,
+       nvl2(commission_pct,
+	        'Salary + Comm', 'Salary')
+from employees
+where department_id in (50,80);
+
+select last_name, salary, commission_pct,
+       nvl2(commission_pct,
+	        salary + salary*commission_pct, salary) THP
+from employees
+where department_id in (50,80);
+
+coalesce(a,b,c)
+
+ if a is not null
+  then a
+  else if b is not null
+       then b
+	   else c
+
+select last_name, salary, commission_pct,
+       coalesce(salary + salary*commission_pct, salary+2000) "New Salary"
+from employees
+where department_id in (50,80);
+
+
+select last_name, job_id, salary,
+       CASE job_id WHEN 'IT_PROG'  THEN 1.10 * salary
+	               WHEN 'ST_CLERK' THEN 1.15 * salary
+				   WHEN 'SA_REP'   THEN 1.20 * salary
+	   ELSE salary + 200
+	   END  "Revised Salary"
+from employees
+where job_id in ('IT_PROG', 'ST_CLERK', 'SA_MAN');
+
+SELECT last_name, job_id, salary,
+       (CASE WHEN salary < 5000 THEN 'Low'
+	         WHEN salary < 10000 THEN 'Medium'
+	         WHEN salary < 20000 THEN 'Good'
+	    ELSE 'Excellent'
+	    END)  "Qualified Salary"
+FROM employees
+ORDER BY "Qualified Salary";
+
+
+select last_name, job_id, salary,
+       DECODE( job_id, 'IT_PROG',  1.10 * salary,
+	                   'ST_CLERK', 1.15 * salary,
+				       'SA_REP',   1.20 * salary,
+					   salary) "Revised Salary"
+from employees
+where job_id in ('IT_PROG', 'ST_CLERK', 'SA_MAN');
+
+
+SELECT last_name, salary,
+       DECODE(TRUNC(salary/2000, 0),
+	                0, 0.00,
+					1, 0.09,
+					2, 0.20,
+					3, 0.30,
+					4, 0.40,
+					5, 0.42,
+					6, 0.44,
+					   0.45) TAX_RATE
+FROM employees;
+
+SELECT avg(salary), max(salary),
+       min(salary), sum(salary)
+FROM employees
+WHERE job_id like '%REP%';	  
+
+SELECT max(hire_date), min(hire_date)
+FROM employees;
+
+SELECT count(*)
+FROM employees;
+
+SELECT count(*)
+FROM employees
+WHERE department_id = 50;
+
+SELECT count(*)
+FROM employees
+WHERE job_id = 'IT_PROG';
+
+SELECT count(commission_pct)
+FROM employees
+WHERE department_id = 50;
+
+SELECT count(commission_pct)
+FROM employees;
+
+SELECT count(*)
+FROM departments;
+
+SELECT count(distinct department_id)
+FROM employees;
+
+-- dibagi dg jumlah karyawan yg dapat komisi
+SELECT avg(commission_pct)
+FROM employees;
+
+-- dibagi dg seluruh karyawan
+SELECT avg(nvl(commission_pct,0))
+FROM employees;
+
+------------------------------
+-- GROUP BY Clause
+
+SELECT department_id, AVG(salary)
+FROM employees
+GROUP BY department_id;
+
+SELECT department_id, AVG(salary)
+FROM employees
+GROUP BY department_id
+ORDER BY department_id;
+
+SELECT department_id, ROUND(AVG(salary),0)
+FROM employees
+GROUP BY department_id
+ORDER BY department_id;
+
+-- ERROR
+SELECT department_id, ROUND(AVG(salary),0)
+FROM employees;
+
+--------------------
+
+SELECT department_id, job_id, SUM(salary)
+FROM employees
+WHERE department_id > 40
+GROUP BY department_id, job_id
+ORDER BY department_id;
+
+-- ERROR
+SELECT department_id, job_id, SUM(salary)
+FROM employees
+WHERE department_id > 40
+GROUP BY department_id
+ORDER BY department_id;
+
+SELECT department_id, AVG(salary)
+FROM employees
+GROUP BY department_id
+HAVING AVG(salary) > 8000;
+
+SELECT job_id, SUM(salary) Payroll
+FROM employees
+WHERE job_id NOT LIKE '%REP%'
+GROUP BY job_id
+HAVING SUM(salary) > 13000
+ORDER BY SUM(salary);
+
+SELECT MAX(AVG(salary))
+FROM employees
+GROUP BY department_id;
+
+-- ERROR
+SELECT department_id, MAX(AVG(salary))
+FROM employees
+GROUP BY department_id;
+
+=== Displaying Multiple Tables ===
+
+== Natural Joins
+
+SELECT employee_id, first_name, job_id, job_title
+FROM employees NATURAL JOIN jobs;
+
+SELECT employee_id, first_name, job_id, job_title
+FROM jobs NATURAL JOIN employees;
+
+== Clause Using
+
+SELECT employee_id, first_name, department_id, department_name
+FROM employees JOIN departments
+USING (department_id);
+
+-- Dieksekusi sukses, hasil tidak sesuai harapan
+SELECT employee_id, first_name, department_id, department_name
+FROM employees NATURAL JOIN departments;
+
+SELECT city, department_name
+FROM locations JOIN departments
+USING (location_id);
+
+SELECT city, department_name
+FROM locations JOIN departments
+USING (location_id)
+WHERE location_id = 1400;
+
+SELECT l.city, d.department_name
+FROM locations l JOIN departments d
+USING (location_id)
+WHERE location_id = 1400;
+
+-- ERROR
+SELECT l.city, d.department_name
+FROM locations l JOIN departments d
+USING (location_id)
+WHERE d.location_id = 1400;
+
+== ON Clause
+
+SELECT e.employee_id, e.first_name, e.department_id, d.department_name
+FROM employees e JOIN departments d
+ON e.department_id = d.department_id;
+
+
+SELECT e.employee_id, l.city, d.department_name
+FROM employees e 
+JOIN departments d
+  ON e.department_id = d.department_id
+JOIN locations l
+  ON d.location_id = l.location_id;
+
+SELECT e.employee_id, l.city, d.department_name
+FROM employees e 
+JOIN departments d
+  ON e.department_id = d.department_id
+JOIN locations l
+  ON d.location_id = l.location_id
+WHERE l.city = 'Toronto';
+
+=== SELF JOIN
+
+SELECT w.last_name, m.last_name
+FROM employees w JOIN employees m
+  ON (w.manager_id = m.employee_id);
+
+=== Non Equijoin
+
+SELECT e.last_name, e.salary, j.grade
+FROM employees e 
+JOIN job_grades j
+  ON e.salary BETWEEN j.lowest_sal AND j.highest_sal
+ORDER BY e.last_name;
+
+== Outer Join
+
+SELECT e.last_name, e.department_id, d.department_name
+FROM employees e LEFT OUTER JOIN departments d
+ON (e.department_id = d.department_id);
+
+SELECT e.last_name, e.department_id, d.department_name
+FROM employees e RIGHT OUTER JOIN departments d
+ON (e.department_id = d.department_id);
+
+SELECT e.last_name, e.department_id, d.department_name
+FROM employees e FULL OUTER JOIN departments d
+ON (e.department_id = d.department_id);
+
+== Cartesian Product
+
+SELECT count(*)
+FROM employees;
+
+SELECT count(*)
+FROM departments;
+
+SELECT 107*27 FROM dual;
+
+SELECT count(*)
+FROM employees 
+CROSS JOIN departments;
+
+SELECT e.employee_id, d.department_id 
+FROM employees e
+CROSS JOIN departments d;
+
+
+=== Managing Database Instance
+
+1. Password File (*.ora)
+		C:\u01\product\12.2.0\dbhome_1\database\PWDprod.ora
+2. Parameter File (*.ora)
+		C:\u01\product\12.2.0\dbhome_1\database\SPFILEPROD.ORA
+3. Control File (*.ctl)
+		C:\u01\oradata\prod\*.ctl
+4. Data File (*.dbf)
+		C:\u01\oradata\prod\*.dbf
+5. Redolog file (*.log)
+		C:\u01\oradata\prod\*.log
+
+== Melihat isi parameter file
+
+SQL> conn / as sysdba
+Connected.
+SQL> select name, value from v$parameter;
+SQL> show parameter 
+SQL> show parameter shared_pool_size
+SQL> show parameter para
+
+SQL> show parameter nls_date_format;
+SQL> select sysdate from dual;
+SQL> alter session set nls_date_format = 'DD-Month-YYYY';
+
+
+
+
