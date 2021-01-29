@@ -88,18 +88,3 @@ Create Database Using DBCA
   Sample Schema : Check Add sample schemas 
   EM DB Express : 5500
 - Password user SYS + System : Welcome1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

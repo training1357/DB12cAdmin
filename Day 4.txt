@@ -1,0 +1,141 @@
+Shutdown => Nomount
+  File yg dibaca
+  1. Password file
+  2. Parameter file
+  
+  Hasilnya terbentuk instance
+  
+Nomount => Mount
+  File yg dibaca
+  3. Control File
+  
+  Hasilnya Oracle DB jadi tahu
+  - Nama dan lokasi datafile
+  - Nama dan lokasi redolog file
+  
+Mount => Open
+  File yg dibaca
+  4. Datafile
+  5. Redolog file
+  
+  Hasilnya : Oracle DB Ready untuk digunakan
+
+===== Startup Oracle Database ====
+
+-- Langsung dari posisi shutdown ke open
+sqlplus / as sysdba
+SQL> shutdown immediate
+SQL> startup
+
+-- Menghidupkan secara bertahap
+sqlplus / as sysdba
+SQL> shutdown immediate
+SQL> startup nomount
+
+SQL> select status from v$instance;
+
+		STATUS
+		------------
+		STARTED
+
+SQL> alter database mount;
+
+SQL> select status from v$instance;
+
+		STATUS
+		------------
+		MOUNTED
+		
+SQL> alter database open;
+
+SQL> select status from v$instance;
+
+		STATUS
+		------------
+		OPEN
+		
+		
+==== Alert Log + Trace File
+
+Lokasi Alert Log  :  C:\u01\diag\rdbms\prod\prod\trace\alert_prod.log
+Lokasi Trace File :  C:\u01\diag\rdbms\prod\prod\trace\*.trc
+			 
+==== Shutdown =====
+
+DB ORCL
+  - User A
+  - User B
+
+Shutdown XNTIA
+  - User C mau login --> GAGAL  
+			 
+Shutdown Normal
+  - User A & B masih bisa bekerja
+  - User A disconnect, User B masih bekerja  
+  - Proses shutdown masih menggantung
+  - User B disconnect, barulah proses shutdown berjalan progressnya
+			 
+Shutdown Transaksional
+  - User A & B masih bisa bekerja
+  - User A commit/rollback -> disconnect, User B masih bekerja  
+  - Proses shutdown masih menggantung
+  - User B commit/rollback -> disconnect, 
+    barulah proses shutdown berjalan progressnya	
+
+Shutdown Immediate
+  - User A & B langsung di disconnect
+  - Semua transaksi A dan B yg belum sempat di commit akan
+    dirollback otomatis
+  - proses shutdown langsung berjalan 	
+  
+Shutdown Abort
+  - Setara dg DB mati secara tidak normal / consistent
+  - Mirip mati listrik, atau kita mematikan komputer langsung 
+    menekan tombol power
+  - Jika ini terjadi, waktu DB pertama kali dihidupkan
+    background process SMON, melakukan instance recovery
+			 
+=== Data Dictionary ===
+
+user_tables
+all_tables
+dba_tables		
+
+HR  : user_tables + all_tables
+DBA : user_tables + all_tables + dba_tables 	 
+			 
+			 
+user_tables : berisi info table yg saya miliki		
+all_tables  : - berisi info table yg saya miliki &
+                table user lain yg di grant ke saya	 
+			  - daftar table yg bisa saya akses
+			    owner bisa saya bisa orang lain
+dba_tables : berisi info table yg dimiliki semua user
+
+========================================================
+
+Konfigurasi dilakukan di Oracle DB Server
+
+Net Configuration Assistant (listener.ora)
+- LISTENER2
+- port : 1522
+- Bisa langsung startup dan create services
+
+Net Manager (listener.ora)
+- LISTENER3
+- port : 1523
+- Hanya membuat konfigurasi saja (listener.ora)
+
+lsnrctl : Listener Control Utility
+
+lsnrctl start LISTENER3
+lsnrctl status LISTENER3
+lsnrctl stop LISTENER3
+			 
+Easy Connect : sqlplus hr/Welcome1@192.11.12.20:1523/prod		
+
+tnsnames.ora
+- Net Manager
+- Net Configuration Assistant	 
+	
+			 
