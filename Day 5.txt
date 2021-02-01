@@ -1,0 +1,92 @@
+Secara Logic
+
+	Database => Tablespace => Segment => Extent => Oracle DB Block 
+
+Secara Physical
+	
+	Tablespace => Datafile
+	
+	Oracle DB Block => OS Block
+	
+	
+Redolog Buffer (SGA) : DML, DDL, DCL
+Redolog Buffer ==> LGWR ==> Redolog File ==> ARC ==> Archived Redolog File
+
+===================================================
+
+-- Dynamic Performance View
+DESC v$tablespace
+SELECT name FROM v$tablespace;
+
+-- Data Dictionary
+DESC dba_tablespaces
+SELECT tablespace_name, status FROM dba_tablespaces;
+
+DESC dba_data_files
+SELECT tablespace_name, file_name
+FROM dba_data_files;
+
+DESC dba_tables
+SELECT tablespace_name, table_name
+FROM dba_tables
+WHERE owner = 'HR';
+
+CREATE TABLESPACE Finance
+DATAFILE 'C:\u01\oradata\prod\Finance_01.dbf'
+SIZE 100M AUTOEXTEND ON NEXT 10M MAXSIZE 4G;
+
+ALTER TABLESPACE Finance
+ADD DATAFILE 'C:\u01\oradata\prod\Finance_02.dbf'
+SIZE 100M;
+
+ALTER DATABASE 
+DATAFILE 'C:\U01\ORADATA\PROD\FINANCE_02.DBF' 
+RESIZE 200M;
+
+ALTER TABLESPACE INVENTORY READ ONLY;
+ALTER TABLESPACE INVENTORY READ WRITE;
+
+CREATE TABLESPACE "Finance"
+DATAFILE 'C:\u01\oradata\prod\Finance11_01.dbf'
+SIZE 100M AUTOEXTEND ON NEXT 10M MAXSIZE 4G;
+
+=== OMF 
+
+SHOW PARAMETER db_create_file_dest
+ALTER SYSTEM SET db_create_file_dest='C:\u01\oradata\prod';
+SHOW PARAMETER db_create_file_dest
+
+CREATE TABLESPACE "Sales";
+
+==== Administering User Security
+
+CREATE USER inv01
+IDENTIFIED BY Welcome2
+DEFAULT TABLESPACE inventory
+TEMPORARY TABLESPACE temp;
+
+ALTER USER inv01
+IDENTIFIED BY Welcome1;
+
+GRANT create session to inv01;
+GRANT create table to inv01;
+ALTER USER inv01 QUOTA 100M ON inventory;
+GRANT select on hr.regions to inv01;
+GRANT insert on hr.regions to inv01;
+REVOKE insert on hr.regions from inv01;
+
+sqlplus inv01/Welcome1
+SQL> create table dept(
+       deptno number(4),
+	   dname  varchar2(15)
+	 );
+	 
+SQL> insert into dept values(10,'IT');
+SQL> select * from hr.regions;
+SQL> insert into hr.regions values(5,'Indo');
+SQL> create table wilayah 
+     as select * from hr.regions;
+
+
+
+
